@@ -18,7 +18,7 @@ class ApplicantsController extends Controller
     public function index()
     {
         // Return a list of applicants.
-        return ApplicantResource::collection(Applicants::all());
+        return ApplicantResource::collection(Applicants::with('skills')->get());
     }
 
     /**

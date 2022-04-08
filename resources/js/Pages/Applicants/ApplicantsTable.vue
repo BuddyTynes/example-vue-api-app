@@ -51,8 +51,8 @@ console.log(applicants);
                                 </td>
                                 <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
                                     <div class="text-sm leading-5 text-gray-900">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                            <span>{{ applicant.skills }}</span>
+                                        <span v-for="skills in applicant.skills" :key="skills.id" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            <span>{{ skills.skill.name }}</span>
                                         </span>
                                     </div>
                                 </td>

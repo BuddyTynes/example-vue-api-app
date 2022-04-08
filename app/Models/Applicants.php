@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ApplicantSkill;
 
 class Applicants extends Model
 {
@@ -15,5 +16,10 @@ class Applicants extends Model
         'skills',
         'status',
     ];
+
+    public function skills()
+    {
+        return $this->hasMany(ApplicantSkill::class, 'applicant_id')->with('skill');
+    }
 
 }

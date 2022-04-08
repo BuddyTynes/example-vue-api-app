@@ -6,6 +6,7 @@ use App\Http\Requests\StoreApplicantsRequest;
 use App\Http\Requests\UpdateApplicantsRequest;
 use Illuminate\Http\Request;
 use App\Models\Applicants;
+use App\Http\Resources\ApplicantResource;
 
 class ApplicantsController extends Controller
 {
@@ -17,7 +18,7 @@ class ApplicantsController extends Controller
     public function index()
     {
         // Return a list of applicants.
-        return response()->json(Applicants::all());
+        return ApplicantResource::collection(Applicants::all());
     }
 
     /**

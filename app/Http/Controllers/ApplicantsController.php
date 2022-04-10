@@ -6,7 +6,9 @@ use App\Http\Requests\StoreApplicantsRequest;
 use App\Http\Requests\UpdateApplicantsRequest;
 use Illuminate\Http\Request;
 use App\Models\Applicants;
+use App\Models\ApplicantSkill;
 use App\Http\Resources\ApplicantResource;
+use Illuminate\Support\Facades\Log;
 
 class ApplicantsController extends Controller
 {
@@ -18,7 +20,7 @@ class ApplicantsController extends Controller
     public function index()
     {
         // Return a list of applicants.
-        return ApplicantResource::collection(Applicants::with('skills')->paginate(10));
+        return ApplicantResource::collection(Applicants::with('skills')->get());
     }
 
     /**
@@ -29,12 +31,23 @@ class ApplicantsController extends Controller
      */
     public function store(StoreApplicantsRequest $request)
     {
-        // Create a new applicant.
-        $applicant = Applicants::create($request->all());
-
-        // Create applicants skills
-        $applicant->skills()->sync($request->skills);
+        // TODO finish validation
         
+        // Create a new applicant.
+        $applicant = Applicants::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'status' => 'pending',
+        ]);
+        
+        // Create applicants skills
+        foreach($request->skills as $key => $skill) {
+            ApplicantSkill::create([
+                'applicant_id' => $applicant->id,
+                'skill_id' => $skill,
+            ]);
+        }
+
         return response()->json($applicant, 201);
     }
 

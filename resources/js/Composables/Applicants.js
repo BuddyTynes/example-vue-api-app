@@ -12,9 +12,9 @@ export default function useApplicants() {
         applicants.value = response.data.data;
     };
 
-    const addApplicant = async (applicant) => {
-        const response = await axios.post('/api/applicants', applicant);
-        applicants.value.push(response.data);
+    const addApplicant = async (form) => {
+        console.log(form);
+        const response = await axios.post('/api/applicants', form);
     };
     
     const updateApplicant = async (applicant) => {
@@ -31,6 +31,7 @@ export default function useApplicants() {
         links,
         applicants,
         getApplicants,
+        addApplicant,
         deleteApplicant,
     };
 }

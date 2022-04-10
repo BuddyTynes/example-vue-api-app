@@ -1,10 +1,16 @@
 <script setup>
 import useApplicants from '../../Composables/Applicants.js';
 import useSkills from '../../Composables/Skills.js';
-import { onMounted } from 'vue';
+import { onMounted, reactive } from 'vue';
 
-const { applicants, links, getApplicants, deleteApplicant } = useApplicants();
+const { applicants, links, getApplicants, addApplicant, deleteApplicant } = useApplicants();
 const { skills, getSkills, deleteSkill } = useSkills();
+
+const form = reactive({
+    'first_name': '',
+    'last_name': '',
+    'skills': [],
+});
 
 onMounted(() => {
     getApplicants();
@@ -17,6 +23,15 @@ const destroyApplicant = async (id) => {
     }
     await deleteApplicant(id);
     await getApplicants();
+};
+
+const saveApplicant = async () => {
+    await addApplicant({...form});
+    await getApplicants();
+    form.first_name = '';
+    form.last_name = '';
+    form.skills = [];
+    toggleModal('create-applicant-modal');
 };
 
 const toggleModal = (id) => { 
@@ -32,35 +47,35 @@ const toggleModal = (id) => {
             <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
                 <div class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
                     <!-- Modal toggle -->
-                    <button @click="toggleModal('create-applicatn-modal')" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                    <button @click="toggleModal('create-applicant-modal')" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
                         Add Applicant
                     </button>
                     <!-- create applicant modal -->
-                    <div id="create-applicatn-modal" tabindex="-1" aria-hidden="true" class="hidden flex justify-center items-center overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
+                    <div id="create-applicant-modal" tabindex="-1" aria-hidden="true" class="hidden flex justify-center items-center overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
                         <div class="relative p-4 w-full max-w-md h-full md:h-auto">
                             <!-- Modal content -->
                             <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                                 <!-- close modal -->
                                 <div class="flex justify-end p-2">
-                                    <button @click="toggleModal('create-applicatn-modal')" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white">
+                                    <button @click="toggleModal('create-applicant-modal')" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white">
                                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>  
                                     </button>
                                 </div>
-                                <form class="px-6 pb-4 space-y-6 lg:px-8 sm:pb-6 xl:pb-8" action="#">
+                                <form class="px-6 pb-4 space-y-6 lg:px-8 sm:pb-6 xl:pb-8" @submit.prevent="saveApplicant">
                                     <h3 class="text-xl font-medium text-gray-900 dark:text-white">Add a new Applicant to the system.</h3>
                                     <!-- input for first_name -->
                                     <div class="flex flex-col">
                                         <label for="first_name" class="block text-gray-700 dark:text-gray-400 text-sm font-medium mb-2">
                                             First Name
                                         </label>
-                                        <input id="first_name" type="text" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 dark:border-gray-600 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" placeholder="First Name">
+                                        <input  id="first_name" type="text" placeholder="First Name" v-model="form.first_name" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 dark:border-gray-600 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" >
                                     </div>
                                     <!-- input for last_name -->
                                     <div class="flex flex-col">
                                         <label for="last_name" class="block text-gray-700 dark:text-gray-400 text-sm font-medium mb-2">
                                             Last Name
                                         </label>
-                                        <input id="last_name" type="text" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 dark:border-gray-600 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" placeholder="Last Name">
+                                        <input  id="last_name" type="text" placeholder="Last Name" v-model="form.last_name" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 dark:border-gray-600 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                                     </div>
                                     <!-- Skill checkboxes -->
                                     <div class="flex flex-col">
@@ -71,7 +86,7 @@ const toggleModal = (id) => {
                                             <div class="grid grid-cols-5 gap-8">
                                                 <div v-for="skill in skills" :key="skill.id" class="flex flex-col">
                                                     <div class="flex flex-col">
-                                                        <input id="{{skill.id}}" type="checkbox" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 dark:border-gray-600 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                                                        <input id="{{skill.id}}" type="checkbox" v-model="form.skills" :value="skill.id" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 dark:border-gray-600 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                                                         <label for="{{skill.id}}" class="block text-gray-700 dark:text-gray-400 text-sm font-medium mb-2">
                                                             {{skill.name}}
                                                         </label>
@@ -82,10 +97,10 @@ const toggleModal = (id) => {
                                     </div>        
                                     <!-- save or cancel-->
                                     <div class="flex justify-end">
-                                        <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                             Save
                                         </button>
-                                        <button type="button" @click="toggleModal('create-applicatn-modal')" class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                                        <button type="button" @click="toggleModal('create-applicant-modal')" class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
                                             Cancel
                                         </button>
                                     </div>

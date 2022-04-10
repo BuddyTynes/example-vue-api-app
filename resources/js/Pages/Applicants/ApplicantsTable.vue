@@ -1,12 +1,23 @@
 <script setup>
-import JetApplicationLogo from '@/Jetstream/ApplicationLogo.vue';
 import useApplicants from '../../Composables/Applicants.js';
 import { onMounted } from 'vue';
 
-const { applicants, getApplicants } = useApplicants();
+const { applicants, links, getApplicants, deleteApplicant } = useApplicants();
 
 onMounted(getApplicants);
-console.log(applicants);
+
+const destroyApplicant = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this applicant?')) {
+        return;
+    }
+    await deleteApplicant(id);
+    await getApplicants();
+};
+
+const toggleModal = (id) => { 
+    var modal = document.getElementById(id);
+	modal.classList.toggle('hidden');
+}
 </script>
 
 <template>
@@ -15,6 +26,52 @@ console.log(applicants);
         <div class="flex flex-col">
             <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
                 <div class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
+                    <!-- Modal toggle -->
+                    <button @click="toggleModal('create-applicatn-modal')" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                        Add Applicant
+                    </button>
+
+                    <!-- create applicant modal -->
+                    <div id="create-applicatn-modal" tabindex="-1" aria-hidden="true" class="hidden flex justify-center items-center overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
+                        <div class="relative p-4 w-full max-w-md h-full md:h-auto">
+                            <!-- Modal content -->
+                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                <!-- close modal -->
+                                <div class="flex justify-end p-2">
+                                    <button @click="toggleModal('create-applicatn-modal')" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>  
+                                    </button>
+                                </div>
+                                <form class="px-6 pb-4 space-y-6 lg:px-8 sm:pb-6 xl:pb-8" action="#">
+                                    <h3 class="text-xl font-medium text-gray-900 dark:text-white">Add a new Applicant to the system.</h3>
+                                    <!-- input for first_name -->
+                                    <div class="flex flex-col">
+                                        <label for="first_name" class="block text-gray-700 dark:text-gray-400 text-sm font-medium mb-2">
+                                            First Name
+                                        </label>
+                                        <input id="first_name" type="text" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 dark:border-gray-600 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" placeholder="First Name">
+                                    </div>
+                                    <!-- input for last_name -->
+                                    <div class="flex flex-col">
+                                        <label for="last_name" class="block text-gray-700 dark:text-gray-400 text-sm font-medium mb-2">
+                                            Last Name
+                                        </label>
+                                        <input id="last_name" type="text" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 dark:border-gray-600 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" placeholder="Last Name">
+                                    </div>
+                                    <!-- save or cancel-->
+                                    <div class="flex justify-end">
+                                        <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                            Save
+                                        </button>
+                                        <button type="button" @click="toggleModal('create-applicatn-modal')" class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div> 
+
                     <table class="min-w-full">
                         <thead>
                             <tr>
@@ -26,6 +83,9 @@ console.log(applicants);
                                 </th>
                                 <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                                     Skills
+                                </th>
+                                <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                    Actions
                                 </th>
                             </tr>
                         </thead>
@@ -53,6 +113,15 @@ console.log(applicants);
                                     <div class="text-sm leading-5 text-gray-900">
                                         <span v-for="skills in applicant.skills" :key="skills.id" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                             <span>{{ skills.skill.name }}</span>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                                    <div class="text-sm leading-5 text-gray-900">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            <button class="px-2 py-1 text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800" @click="destroyApplicant(applicant.id)">
+                                                Delete
+                                            </button>
                                         </span>
                                     </div>
                                 </td>

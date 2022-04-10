@@ -22845,11 +22845,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                console.log(page);
-                _context3.next = 3;
+                _context3.next = 2;
                 return getApplicants(page);
 
-              case 3:
+              case 2:
               case "end":
                 return _context3.stop();
             }
@@ -22868,11 +22867,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
-                console.log('searching');
-                _context4.next = 3;
+                _context4.next = 2;
                 return searchApplicant(search.query);
 
-              case 3:
+              case 2:
               case "end":
                 return _context4.stop();
             }
@@ -28899,9 +28897,8 @@ function useApplicants() {
             case 2:
               response = _context5.sent;
               applicants.value = response.data;
-              console.log(applicants.value);
 
-            case 5:
+            case 4:
             case "end":
               return _context5.stop();
           }

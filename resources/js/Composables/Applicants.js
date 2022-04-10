@@ -32,8 +32,6 @@ export default function useApplicants() {
     const searchApplicant = async (search) => {
         const response = await axios.get(`/search/applicants?q=${search}`);
         applicants.value = response.data;
-
-        console.log(applicants.value);
     };
     
     return {

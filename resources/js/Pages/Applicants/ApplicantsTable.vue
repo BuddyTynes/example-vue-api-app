@@ -44,12 +44,10 @@ const toggleModal = (id) => {
 }
 
 const findPage = async (page) => {
-    console.log(page);
     await getApplicants(page);
 };
 
 const searchApplicants = async () => {
-    console.log('searching');
     await searchApplicant(search.query);
 };
 </script>

@@ -5,15 +5,17 @@ export default function useApplicants() {
     const applicants = ref([]);
     const links = ref({});
     
-    const getApplicants = async () => {
-        const response = await axios.get('/api/applicants');
+    const getApplicants = async (page=null) => {
+        if (page === null) {
+            page = '/api/applicants';
+        }
 
+        const response = await axios.get(page);
         links.value = response.data.links;
         applicants.value = response.data.data;
     };
 
     const addApplicant = async (form) => {
-        console.log(form);
         const response = await axios.post('/api/applicants', form);
     };
     
@@ -26,6 +28,13 @@ export default function useApplicants() {
     const deleteApplicant = async (id) => {
         await axios.delete(`/api/applicants/${id}`);
     };
+
+    const searchApplicant = async (search) => {
+        const response = await axios.get(`/search/applicants?q=${search}`);
+        applicants.value = response.data;
+
+        console.log(applicants.value);
+    };
     
     return {
         links,
@@ -33,5 +42,7 @@ export default function useApplicants() {
         getApplicants,
         addApplicant,
         deleteApplicant,
+        updateApplicant,
+        searchApplicant,
     };
 }

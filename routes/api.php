@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use \App\Http\Controllers\ApplicantsController;
+use \App\Http\Controllers\SkillController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +20,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('applicants', \App\Http\Controllers\ApplicantsController::class);
+Route::apiResource('applicants', ApplicantsController::class);
 
-Route::apiResource('skills', \App\Http\Controllers\SkillController::class);
+Route::apiResource('skills', SkillController::class);

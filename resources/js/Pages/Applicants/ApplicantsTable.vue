@@ -3,13 +3,17 @@ import useApplicants from '../../Composables/Applicants.js';
 import useSkills from '../../Composables/Skills.js';
 import { onMounted, reactive } from 'vue';
 
-const { applicants, links, getApplicants, addApplicant, deleteApplicant } = useApplicants();
+const { applicants, links, getApplicants, addApplicant, deleteApplicant, searchApplicant } = useApplicants();
 const { skills, getSkills, deleteSkill } = useSkills();
 
 const form = reactive({
     'first_name': '',
     'last_name': '',
     'skills': [],
+});
+
+const search = reactive({
+    'query': '',
 });
 
 onMounted(() => {
@@ -38,6 +42,16 @@ const toggleModal = (id) => {
     var modal = document.getElementById(id);
 	modal.classList.toggle('hidden');
 }
+
+const findPage = async (page) => {
+    console.log(page);
+    await getApplicants(page);
+};
+
+const searchApplicants = async () => {
+    console.log('searching');
+    await searchApplicant(search.query);
+};
 </script>
 
 <template>
@@ -108,7 +122,24 @@ const toggleModal = (id) => {
                             </div>
                         </div>
                     </div> 
-
+                    <!-- end applicant modal -->
+                    <!-- Applicants table -->
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <button @click="findPage(links.prev)" class="text-gray-500 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-25">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                            </button>
+                            <button @click="findPage(links.next)" class="text-gray-500 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-25">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
+                            </button>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="text" v-model="search.query" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 dark:border-gray-600 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" placeholder="Search">
+                            <button @click="searchApplicants" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                Search
+                            </button>
+                        </div>
+                    </div>
                     <table class="min-w-full">
                         <thead>
                             <tr>

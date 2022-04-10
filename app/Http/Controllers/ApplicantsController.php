@@ -20,7 +20,7 @@ class ApplicantsController extends Controller
     public function index()
     {
         // Return a list of applicants.
-        return ApplicantResource::collection(Applicants::with('skills')->get());
+        return ApplicantResource::collection(Applicants::with('skills')->paginate(5));
     }
 
     /**
@@ -32,7 +32,7 @@ class ApplicantsController extends Controller
     public function store(StoreApplicantsRequest $request)
     {
         // TODO finish validation
-        
+
         // Create a new applicant.
         $applicant = Applicants::create([
             'first_name' => $request->first_name,
@@ -99,11 +99,15 @@ class ApplicantsController extends Controller
      */
     public function search(Request $request)
     {
-        // Search for applicants.
-        $applicants = Applicants::where('first_name', 'like', '%' . $request->input('query') . '%')
-            ->orWhere('last_name', 'like', '%' . $request->input('query') . '%')
-            ->orWhere('email', 'like', '%' . $request->input('query') . '%')
-            ->get();
-        return response()->json($applicants, 200);
+        if($request->input('q') != '') {
+            $applicants = Applicants::with('skills')->where('first_name', 'LIKE', '%' . $request->input('q') . '%')
+                ->orWhere('last_name', 'LIKE', '%' . $request->input('q') . '%')
+                ->orWhere('status', 'LIKE', '%' . $request->input('q') . '%')
+                ->get();
+        } else {
+            $applicants = Applicants::with('skills')->get();
+        }
+
+        return response()->json(ApplicantResource::collection($applicants), 200);
     }
 }

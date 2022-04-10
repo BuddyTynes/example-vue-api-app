@@ -19,3 +19,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('applicants', \App\Http\Controllers\ApplicantsController::class);
+
+Route::apiResource('skills', \App\Http\Controllers\SkillController::class);

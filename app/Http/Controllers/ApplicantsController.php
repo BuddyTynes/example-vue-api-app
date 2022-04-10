@@ -31,6 +31,10 @@ class ApplicantsController extends Controller
     {
         // Create a new applicant.
         $applicant = Applicants::create($request->all());
+
+        // Create applicants skills
+        $applicant->skills()->sync($request->skills);
+        
         return response()->json($applicant, 201);
     }
 

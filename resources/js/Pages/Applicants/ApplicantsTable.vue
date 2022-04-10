@@ -1,10 +1,15 @@
 <script setup>
 import useApplicants from '../../Composables/Applicants.js';
+import useSkills from '../../Composables/Skills.js';
 import { onMounted } from 'vue';
 
 const { applicants, links, getApplicants, deleteApplicant } = useApplicants();
+const { skills, getSkills, deleteSkill } = useSkills();
 
-onMounted(getApplicants);
+onMounted(() => {
+    getApplicants();
+    getSkills();
+});
 
 const destroyApplicant = async (id) => {
     if (!window.confirm('Are you sure you want to delete this applicant?')) {
@@ -30,7 +35,6 @@ const toggleModal = (id) => {
                     <button @click="toggleModal('create-applicatn-modal')" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
                         Add Applicant
                     </button>
-
                     <!-- create applicant modal -->
                     <div id="create-applicatn-modal" tabindex="-1" aria-hidden="true" class="hidden flex justify-center items-center overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
                         <div class="relative p-4 w-full max-w-md h-full md:h-auto">
@@ -58,6 +62,24 @@ const toggleModal = (id) => {
                                         </label>
                                         <input id="last_name" type="text" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 dark:border-gray-600 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" placeholder="Last Name">
                                     </div>
+                                    <!-- Skill checkboxes -->
+                                    <div class="flex flex-col">
+                                        <label for="skills" class="block text-gray-700 dark:text-gray-400 text-sm font-medium mb-2">
+                                            Skills
+                                        </label>
+                                        <div class="flex flex-wrap">
+                                            <div class="grid grid-cols-5 gap-8">
+                                                <div v-for="skill in skills" :key="skill.id" class="flex flex-col">
+                                                    <div class="flex flex-col">
+                                                        <input id="{{skill.id}}" type="checkbox" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 dark:border-gray-600 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                                                        <label for="{{skill.id}}" class="block text-gray-700 dark:text-gray-400 text-sm font-medium mb-2">
+                                                            {{skill.name}}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>        
                                     <!-- save or cancel-->
                                     <div class="flex justify-end">
                                         <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">

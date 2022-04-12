@@ -38,9 +38,17 @@ const saveApplicant = async () => {
     toggleModal('create-applicant-modal');
 };
 
-const toggleModal = (id) => { 
-    var modal = document.getElementById(id);
-	modal.classList.toggle('hidden');
+const toggleModal = (id) => {
+    // toggle hidden actions menu
+    const actions = document.querySelectorAll('.applicant-actions-menu');
+    actions.forEach(action => {
+        // if class hidden is not present, hide it
+        if (!action.classList.contains('hidden')) {
+            action.classList.toggle('hidden')
+        }
+    });
+
+    document.getElementById(id).classList.toggle('hidden');
 }
 
 const findPage = async (page) => {
@@ -151,7 +159,7 @@ const searchApplicants = async () => {
                                     Skills
                                 </th>
                                 <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                                    Actions
+                                    
                                 </th>
                             </tr>
                         </thead>
@@ -183,12 +191,36 @@ const searchApplicants = async () => {
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                                    <div class="text-sm leading-5 text-gray-900">
+                                    <!-- <div class="text-sm leading-5 text-gray-900">
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                             <button class="px-2 py-1 text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800" @click="destroyApplicant(applicant.id)">
                                                 Delete
                                             </button>
                                         </span>
+                                    </div> -->
+                                    <!-- dropdown button for applicant options -->
+                                    <div class="ml-2 relative">
+                                        <div>
+                                            <button @click="toggleModal(`applicant-options-${applicant.id}`)" class="text-gray-500 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-25">
+                                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                                                Actions
+                                            </button>
+                                        </div>
+                                        <!-- create div with id applicant-options-${applicant.id} -->
+
+                                        <div v-bind:id="`applicant-options-${applicant.id}`" class="applicant-actions-menu origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg hidden" style="z-index: 1;">
+                                            <div class="py-1 rounded-md bg-white shadow-xs">
+                                                <a href="#" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">
+                                                    View
+                                                </a>
+                                                <a href="#" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">
+                                                    Edit
+                                                </a>
+                                                <a @click="destroyApplicant(applicant.id)" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">
+                                                    Delete
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>

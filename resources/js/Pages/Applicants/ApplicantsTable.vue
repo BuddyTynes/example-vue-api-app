@@ -29,12 +29,29 @@ const destroyApplicant = async (id) => {
     await getApplicants();
 };
 
+const openApplicantModal = () => {
+    form.skills = [];
+    toggleModal('create-applicant-modal');
+};
+
 const saveApplicant = async () => {
     await addApplicant({...form});
     await getApplicants();
     form.first_name = '';
     form.last_name = '';
     form.skills = [];
+    toggleModal('create-applicant-modal');
+};
+
+const viewApplicant = (applicant) => {
+    form.first_name = applicant.first_name;
+    form.last_name = applicant.last_name;
+    form.skills = [];
+
+    applicant.skills.forEach(skill => {
+        form.skills.push(skill.skill_id);
+    });
+
     toggleModal('create-applicant-modal');
 };
 
@@ -69,7 +86,7 @@ const searchApplicants = async () => {
             <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
                 <div class="align-middle inline-block min-w-full shadow sm:rounded-lg border-b border-gray-200">
                     <!-- Modal toggle -->
-                    <button @click="toggleModal('create-applicant-modal')" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                    <button @click="openApplicantModal()" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
                         Add Applicant
                     </button>
                     <!-- create applicant modal -->
@@ -107,12 +124,11 @@ const searchApplicants = async () => {
                                         <div class="flex flex-wrap">
                                             <div class="grid grid-cols-5 gap-8">
                                                 <div v-for="skill in skills" :key="skill.id" class="flex flex-col">
-                                                    <div class="flex flex-col">
-                                                        <input id="{{skill.id}}" type="checkbox" v-model="form.skills" :value="skill.id" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 dark:border-gray-600 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                                                        <label for="{{skill.id}}" class="block text-gray-700 dark:text-gray-400 text-sm font-medium mb-2">
-                                                            {{skill.name}}
-                                                        </label>
-                                                    </div>
+                                                    <!-- if form.skills has our skill id we check the checkbox -->
+                                                    <input :checked="skills.includes(skill.id)" :id="skill.id" type="checkbox" v-model="form.skills" :value="skill.id"  class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 dark:border-gray-600 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                                                    <label for="{{skill.id}}" class="block text-gray-700 dark:text-gray-400 text-sm font-medium mb-2">
+                                                        {{skill.name}}
+                                                    </label>
                                                 </div>
                                             </div>
                                         </div>
@@ -207,7 +223,7 @@ const searchApplicants = async () => {
 
                                         <div v-bind:id="`applicant-options-${applicant.id}`" class="applicant-actions-menu origin-top-right right-30 mt-2 w-48 rounded-md shadow-lg hidden" style="z-index: 1; position: fixed;">
                                             <div class="py-1 rounded-md bg-white shadow-xs">
-                                                <a href="#" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">
+                                                <a @click="viewApplicant(applicant)" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">
                                                     View
                                                 </a>
                                                 <a href="#" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">
